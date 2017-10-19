@@ -16,6 +16,24 @@ function DateMaskDirective($locale) {
 
 	var defaultDateFormat = dateFormatMapByLocale[$locale.id] || 'YYYY-MM-DD';
 
+	var setCaretPosition = function (el, caretPos) {
+		el.value = el.value;
+		if (el !== null) {
+			if (el.createTextRange) {
+				var range = el.createTextRange();
+				range.move('character', caretPos);
+				range.select();
+			} else {
+				if (el.selectionStart || el.selectionStart === 0) {
+					el.focus();
+					el.setSelectionRange(caretPos, caretPos);
+				} else {
+					el.focus();
+				}
+			}
+		}
+	};
+
 	return {
 		restrict: 'A',
 		require: 'ngModel',
@@ -54,8 +72,11 @@ function DateMaskDirective($locale) {
 				if (ctrl.$viewValue !== formatedValue) {
 					ctrl.$setViewValue(formatedValue);
 					ctrl.$render();
+					setTimeout(function () { 
+						setCaretPosition(element[0], formatedValue.length)
+					}, 0);
 				}
-
+				
 				return attrs.parse === 'false'
 					? formatedValue
 					: moment(formatedValue, dateFormat).toDate();
