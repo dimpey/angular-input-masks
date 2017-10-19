@@ -14,7 +14,7 @@ function DateMaskDirective($locale) {
 		'ru': 'DD.MM.YYYY'
 	};
 
-	var dateFormat = dateFormatMapByLocale[$locale.id] || 'YYYY-MM-DD';
+	var defaultDateFormat = dateFormatMapByLocale[$locale.id] || 'YYYY-MM-DD';
 
 	return {
 		restrict: 'A',
@@ -22,7 +22,7 @@ function DateMaskDirective($locale) {
 		link: function(scope, element, attrs, ctrl) {
 			attrs.parse = attrs.parse || 'true';
 
-			dateFormat = attrs.uiDateMask || dateFormat;
+			var dateFormat = attrs.uiDateMask || defaultDateFormat;
 
 			var dateMask = new StringMask(dateFormat.replace(/[YMD]/g,'0'));
 
